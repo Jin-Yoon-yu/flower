@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>指尖花语 · 手势花朵</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 全屏 3D 画布 -->
+  <canvas id="glcanvas"></canvas>
+
+  <!-- 诊断横幅（渲染路径/状态） -->
+  <div id="diag" class="diag"></div>
+
+  <!-- 摄像头预览（左上角小窗） -->
+  <div id="videoPanel" class="panel">
+    <video id="video" autoplay playsinline muted></video>
+    <div id="handCanvasWrap"><canvas id="handCanvas"></canvas></div>
+    <div class="panel-label">摄像头</div>
+  </div>
+
+  <!-- 状态与提示（左下角） -->
+  <div id="hud" class="panel hud">
+    <div class="hud-row">
+      <span id="stateText">正在初始化…</span>
+    </div>
+    <div class="hud-hint">
+      <span class="chip chip-closed">✊ 握拳 → 收成花苞</span>
+      <span class="chip chip-open">🖐 张开手掌 → 花瓣绽放</span>
+      <span class="chip">🖱 经过花上 → 散开回拢 / 长按拖拽转花</span>
+      <span class="chip">📱 手机：单指转花 · 双指缩放 · 双指捏合换色</span>
+      <span class="chip">✊✊ 双拳保持 0.5s → 换花色/形状</span>
+    </div>
+  </div>
+
+  <!-- 开合度指示条（右上角） -->
+  <div id="meter" class="panel meter">
+    <div class="meter-title">绽放程度</div>
+    <div class="meter-bar"><div id="meterFill"></div></div>
+  </div>
+
+  <!-- 标题 -->
+  <div class="title">
+    <h1>指尖花语</h1>
+    <p>手势控制花朵在指尖绽放</p>
+  </div>
+
+  <!-- 错误提示 -->
+  <div id="errorBox" class="error hidden">
+    <p>摄像头或手势识别初始化失败。请检查：</p>
+    <ul>
+      <li>是否通过 <code>http://</code>（或 https）访问，直接 <code>file://</code> 打开无法使用摄像头</li>
+      <li>浏览器是否已授权摄像头权限</li>
+      <li>网络连接（MediaPipe 模型需从 CDN 加载）</li>
+    </ul>
+  </div>
+
+  <!--
+    MediaPipe Hands（基于 @mediapipe/hands 浏览器版，CDN 加载）
+    说明：官方推荐浏览器端使用，无需本地模型文件，权重自动按需下载。
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <!-- Three.js：CDN ES Module -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

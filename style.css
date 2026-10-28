@@ -1,0 +1,236 @@
+:root {
+  --accent: #ff9ecb;
+  --accent-2: #7cf5d8;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05030c;
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  color: #f5eefb;
+}
+
+#glcanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  touch-action: none; /* 触屏：禁用双指缩放/滚动，手势全交给 JS */
+}
+
+/* ---------- 面板通用 ---------- */
+.panel {
+  position: fixed;
+  z-index: 10;
+  background: rgba(12, 8, 28, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- 摄像头预览 ---------- */
+#videoPanel {
+  top: 18px;
+  left: 18px;
+  padding: 10px;
+}
+#videoPanel video {
+  width: 240px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  background: #000;
+  transform: scaleX(-1); /* 镜像显示，与 3D 手部朝向一致 */
+}
+#handCanvasWrap {
+  position: relative;
+  width: 240px;
+  height: 160px;
+  margin-top: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.25);
+}
+#handCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.panel-label {
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  left: 18px;
+  bottom: 18px;
+  padding: 14px 18px;
+  max-width: 340px;
+}
+.hud-row {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+#stateText { transition: color 0.3s; }
+#stateText.open { color: var(--accent-2); }
+#stateText.closed { color: var(--accent); }
+
+.hud-hint {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.75);
+  transition: all 0.25s;
+}
+.chip-closed.active {
+  background: rgba(255, 158, 203, 0.18);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px rgba(255, 158, 203, 0.35);
+}
+.chip-open.active {
+  background: rgba(124, 245, 216, 0.18);
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+  box-shadow: 0 0 16px rgba(124, 245, 216, 0.35);
+}
+
+/* ---------- 开合度指示 ---------- */
+#meter {
+  top: 18px;
+  right: 18px;
+  padding: 12px 14px;
+  width: 180px;
+}
+.meter-title {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+}
+.meter-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+#meterFill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.12s linear;
+  box-shadow: 0 0 12px rgba(255, 158, 203, 0.6);
+}
+
+/* ---------- 标题 ---------- */
+.title {
+  position: fixed;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+}
+.title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  background: linear-gradient(90deg, #fff, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(255, 158, 203, 0.25);
+}
+.title p {
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---------- 错误提示 ---------- */
+.error {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 3, 12, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 40px;
+}
+/* 诊断横幅 */
+.diag {
+  position: fixed;
+  bottom: 8px;
+  right: 12px;
+  z-index: 9;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(12, 8, 28, 0.5);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+.error > div {
+  max-width: 460px;
+  background: rgba(255, 80, 120, 0.08);
+  border: 1px solid rgba(255, 80, 120, 0.4);
+  border-radius: 14px;
+  padding: 28px;
+}
+.error p { font-size: 15px; margin-bottom: 10px; }
+.error ul { margin: 12px 0 0 18px; font-size: 13px; line-height: 1.8; color: rgba(255, 255, 255, 0.7); }
+.error code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.hidden { display: none; }
+
+@media (max-width: 768px), (max-height: 500px) {
+  .title h1 { font-size: 18px; letter-spacing: 0.15em; }
+  .title p { font-size: 10px; }
+  /* 手机：摄像头预览缩小到右下角，不挡花 */
+  #videoPanel {
+    top: auto; bottom: 14px; right: 14px; left: auto;
+    padding: 6px;
+  }
+  #videoPanel video, #handCanvasWrap { width: 130px; height: 87px; }
+  #handCanvasWrap { margin-top: 4px; }
+  .panel-label { font-size: 9px; margin-top: 3px; }
+  /* HUD 移到左下角，提示条可换行 */
+  #hud { left: 14px; bottom: 14px; right: 170px; padding: 10px 12px; max-width: none; }
+  .hud-hint { gap: 4px; }
+  .chip { font-size: 10px; padding: 3px 7px; }
+  #meter { display: none; }
+  .diag { font-size: 9px; bottom: 4px; right: 8px; }
+}

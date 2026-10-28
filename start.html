@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>指尖花语 · 开始</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #05030c;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      color: #f5eefb;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .card {
+      text-align: center;
+      padding: 40px;
+      max-width: 520px;
+      background: rgba(12, 8, 28, 0.6);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .card h1 {
+      font-size: 30px; letter-spacing: 0.3em;
+      background: linear-gradient(90deg,#fff,#ff9ecb,#7cf5d8);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      margin-bottom: 12px;
+    }
+    .card p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 22px; }
+    .card button {
+      font-size: 17px; padding: 14px 36px;
+      border: 1px solid rgba(255,158,203,0.5);
+      background: linear-gradient(90deg, rgba(255,158,203,0.18), rgba(124,245,216,0.18));
+      color: #fff; border-radius: 999px; cursor: pointer;
+      transition: all 0.25s; letter-spacing: 0.1em;
+    }
+    .card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(255,158,203,0.4);
+      border-color: #ff9ecb;
+    }
+    .card .sub { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 16px; letter-spacing: 0.05em; }
+    .card .warn { font-size: 12px; color: #ffd166; margin-top: 12px; display: none; }
+    .dot { display:inline-block;width:8px;height:8px;border-radius:50%;background:#7cf5d8;margin-right:6px;
+      box-shadow:0 0 8px #7cf5d8; animation:pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>指尖花语</h1>
+    <p>手势控制花朵在指尖绽放<br/>点击下方按钮开启摄像头，进入花园</p>
+    <button id="startBtn">开 始 体 验</button>
+    <div class="sub"><span class="dot"></span>需授予摄像头权限 · 建议使用 Chrome / Edge</div>
+    <div class="warn" id="warnBox">提示：当前是 http 环境，部分浏览器（尤其手机）可能限制摄像头，桌面浏览器通常可用。</div>
+  </div>
+  <script>
+    const btn = document.getElementById('startBtn');
+    const warnBox = document.getElementById('warnBox');
+    // http（非 localhost）环境下提前提示
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      warnBox.style.display = 'block';
+    }
+    btn.addEventListener('click', () => {
+      // 跳转进主页面（/index.html 或根路径）
+      location.href = './index.html';
+    });
+  </script>
+</body>
+</html>
